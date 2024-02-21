@@ -15,15 +15,7 @@
     <description>movierama</description>
     <properties>
         <java.version>17</java.version>
-        <zk.version>9.6.0-jakarta</zk.version>
     </properties>
-    <repositories>
-        <repository>
-            <id>ZK CE</id>
-            <name>ZK CE Repository</name>
-            <url>https://mavensync.zkoss.org/maven2</url>
-        </repository>
-    </repositories>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -40,10 +32,10 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.zkoss.zkspringboot</groupId>
-            <artifactId>zkspringboot-starter</artifactId>
-            <type>pom</type>
-            <version>3.2.1</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>

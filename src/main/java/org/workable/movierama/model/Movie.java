@@ -25,13 +25,11 @@ public class Movie {
     @Column(length = 1000)
     private String description;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @JoinColumn(nullable = false)
     private LocalDate dateAdded = LocalDate.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @ToString.Exclude
     private User user;
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
