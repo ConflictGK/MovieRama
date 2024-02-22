@@ -1,5 +1,6 @@
 package org.workable.movierama.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,13 +11,10 @@ import org.workable.movierama.model.Movie;
 import org.workable.movierama.service.MovieService;
 
 @Controller
+@RequiredArgsConstructor
 public class MovieController {
 
     private final MovieService movieService;
-
-    public MovieController(MovieService movieService) {
-        this.movieService = movieService;
-    }
 
     @GetMapping("/movies")
     public String listMovies(Model model) {
