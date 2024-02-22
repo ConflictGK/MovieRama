@@ -23,6 +23,10 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public List<Movie> findAll() {
-        return new ArrayList<>();
+        Movie movie = new Movie();
+        movie.setDescription("test movie");
+        movie.setTitle("test movie");
+
+        return List.of(movie);
     }
 }

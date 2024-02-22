@@ -26,8 +26,8 @@ public class Opinion {
     @ToString.Exclude
     private Movie movie;
 
-    @Column(nullable = false)
-    private Boolean like;
+    @Column(name = "is_liked", nullable = false)
+    private Boolean isLiked;
 
     @Override
     public final boolean equals(Object o) {

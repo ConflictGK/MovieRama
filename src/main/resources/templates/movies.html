@@ -7,6 +7,8 @@
 <h1>Movies</h1>
 <div th:each="movie : ${movies}">
     <p th:text="${movie.title}">Movie Title</p>
+    <p th:text="${movie.description}">Movie Description</p>
 </div>
 </body>
 </html>
+
