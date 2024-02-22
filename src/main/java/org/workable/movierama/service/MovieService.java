@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface MovieService {
 
-    void registerMovie(Movie movie);
-
     List<Movie> findAll();
+
+    void save(Movie movie);
 }
