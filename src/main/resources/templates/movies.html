@@ -1,14 +1,33 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Movies</title>
+    <title>MovieRama</title>
 </head>
 <body>
+<header>
+    <div th:fragment="navbar">
+        <div th:if="${not #authorization.expression('isAuthenticated()')}">
+            <!-- If user is not authenticated, show login and signup links -->
+            <a th:href="@{/login}">Log in</a> or
+            <a th:href="@{/signup}">Sign up</a>
+        </div>
+        <div th:if="${#authorization.expression('isAuthenticated()')}">
+            <!-- If user is authenticated, show welcome back message and logout link -->
+            <span th:if="${#authentication.principal.username != 'anonymousUser'}">
+            Welcome back <span th:text="${#authentication.principal.username}">Username</span>!
+            <a th:href="@{/logout}">Logout</a>
+        </span>
+        </div>
+    </div>
+</header>
+<h1>MovieRama</h1>
+<div th:if="${#authorization.expression('isAuthenticated()')}">
+    <a class="btn btn-primary" th:href="@{/movies/new}">New Movie</a>
+</div>
 <h1>Movies</h1>
 <div th:each="movie : ${movies}">
-    <p th:text="${movie.title}">Movie Title</p>
-    <p th:text="${movie.description}">Movie Description</p>
+    <h2 th:text="${movie.title}">Movie Title</h2>
+    <p th:text="${movie.description}">Description</p>
 </div>
 </body>
 </html>
-
