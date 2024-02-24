@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:alpine
+    container_name: movierama-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: movierama-db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: movierama-app
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/movierama-db
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: pass
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:
