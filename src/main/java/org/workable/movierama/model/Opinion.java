@@ -3,6 +3,7 @@ package org.workable.movierama.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
+import org.workable.movierama.enumeration.OpinionType;
 
 import java.util.Objects;
 
@@ -10,6 +11,9 @@ import java.util.Objects;
 @Table(name = "opinions")
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Opinion {
 
     @Id
@@ -26,8 +30,9 @@ public class Opinion {
     @ToString.Exclude
     private Movie movie;
 
-    @Column(name = "is_liked", nullable = false)
-    private Boolean isLiked;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "opinion_type", nullable = false)
+    private OpinionType opinionType;
 
     @Override
     public final boolean equals(Object o) {

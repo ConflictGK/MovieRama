@@ -1,7 +1,8 @@
 package org.workable.movierama.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDate;
@@ -32,8 +33,20 @@ public class Movie {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "movie", fetch = FetchType.LAZY)
     private Set<Opinion> opinions = new HashSet<>();
+
+    @Transient
+    private boolean alreadyLiked;
+
+    @Transient
+    private boolean alreadyHated;
+
+    @Transient
+    private long likes;
+
+    @Transient
+    private long hates;
 
     @Override
     public final boolean equals(Object o) {

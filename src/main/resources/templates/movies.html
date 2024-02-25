@@ -28,6 +28,31 @@
 <div th:each="movie : ${movies}">
     <h2 th:text="${movie.title}">Movie Title</h2>
     <p th:text="${movie.description}">Description</p>
+
+    <div th:if="${#authorization.expression('isAuthenticated()') and movie.likes == 0 and movie.hates == 0}">
+        <p>Be the first to vote for this movie: </p>
+    </div>
+    <div th:if="${#authorization.expression('isAuthenticated()')}">
+        <!-- Check if the user has liked/hated this movie -->
+        <form method="post" th:action="@{/movies/{movieId}/vote(movieId=${movie.id})}">
+            <input name="movieId" th:value="${movie.id}" type="hidden"/>
+            <input name="opinion" type="hidden" value="L"/>
+            <button th:if="${!movie.alreadyLiked}" type="submit">Like</button>
+            <button th:if="${movie.alreadyLiked}" type="submit">Unlike</button>
+        </form>
+        <form method="post" th:action="@{/movies/{movieId}/vote(movieId=${movie.id})}">
+            <input name="movieId" th:value="${movie.id}" type="hidden"/>
+            <input name="opinion" type="hidden" value="H"/>
+            <button th:if="${!movie.alreadyHated}" type="submit">Hate</button>
+            <button th:if="${movie.alreadyHated}" type="submit">Unhate</button>
+        </form>
+    </div>
+
+
+    <div>
+        <span th:text="${movie.likes} + ' likes | ' + ${movie.hates} + ' hates'">Votes</span>
+    </div>
 </div>
+
 </body>
 </html>
