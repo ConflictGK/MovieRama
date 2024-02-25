@@ -1,15 +1,15 @@
 package org.workable.movierama.service;
 
+import org.springframework.data.domain.Page;
 import org.workable.movierama.enumeration.OpinionType;
 import org.workable.movierama.model.Movie;
 import org.workable.movierama.model.User;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface MovieService {
 
-    List<Movie> findAll();
+    Page<Movie> findAll(String sortBy, int page);
 
     Optional<Movie> findById(Long movieId);
     void save(Movie movie);

@@ -2,6 +2,7 @@ package org.workable.movierama.controller;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -16,7 +17,6 @@ import org.workable.movierama.service.OpinionService;
 import org.workable.movierama.service.UserService;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,11 +27,16 @@ public class MovieController {
     private final OpinionService opinionService;
 
     @GetMapping("/movies")
-    public String listMovies(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        List<Movie> movies = movieService.findAll();
+    public String listMovies(Model model,
+                             @RequestParam(defaultValue = "date") String sortBy,
+                             @RequestParam(defaultValue = "0") int page,
+                             @AuthenticationPrincipal UserDetails userDetails) {
+        Page<Movie> moviePage = movieService.findAll(sortBy, page);
 
-        model.addAttribute("movies", movies);
-        movies.forEach(movie -> {
+        model.addAttribute("movies", moviePage);
+        model.addAttribute("page", moviePage);
+        model.addAttribute("sortBy", sortBy);
+        moviePage.forEach(movie -> {
             movie.setLikes(movieService.countOpinions(movie, OpinionType.LIKE));
             movie.setHates(movieService.countOpinions(movie, OpinionType.HATE));
         });
@@ -40,7 +45,7 @@ public class MovieController {
             // User is logged in
             User user = userService.findUserByUsername(userDetails.getUsername());
             model.addAttribute("username", user.getUsername());
-            movies.forEach(movie -> {
+            moviePage.forEach(movie -> {
                 movie.setAlreadyLiked(movieService.alreadyLikedByUser(movie, user));
                 movie.setAlreadyHated(movieService.alreadyHatedByUser(movie, user));
             });
