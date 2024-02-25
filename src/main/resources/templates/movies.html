@@ -27,25 +27,29 @@
 <h1>Movies</h1>
 <div th:each="movie : ${movies}">
     <h2 th:text="${movie.title}">Movie Title</h2>
+    <p>Posted by <span th:text="${movie.user.username}">Username</span></p>
     <p th:text="${movie.description}">Description</p>
 
     <div th:if="${#authorization.expression('isAuthenticated()') and movie.likes == 0 and movie.hates == 0}">
         <p>Be the first to vote for this movie: </p>
     </div>
+    <!-- Render voting buttons only if the user is authenticated and is not the owner of the movie -->
     <div th:if="${#authorization.expression('isAuthenticated()')}">
-        <!-- Check if the user has liked/hated this movie -->
-        <form method="post" th:action="@{/movies/{movieId}/vote(movieId=${movie.id})}">
-            <input name="movieId" th:value="${movie.id}" type="hidden"/>
-            <input name="opinion" type="hidden" value="L"/>
-            <button th:if="${!movie.alreadyLiked}" type="submit">Like</button>
-            <button th:if="${movie.alreadyLiked}" type="submit">Unlike</button>
-        </form>
-        <form method="post" th:action="@{/movies/{movieId}/vote(movieId=${movie.id})}">
-            <input name="movieId" th:value="${movie.id}" type="hidden"/>
-            <input name="opinion" type="hidden" value="H"/>
-            <button th:if="${!movie.alreadyHated}" type="submit">Hate</button>
-            <button th:if="${movie.alreadyHated}" type="submit">Unhate</button>
-        </form>
+        <div th:unless="${movie.user.username == #authentication.principal.username}">
+            <!-- Check if the user has liked/hated this movie -->
+            <form method="post" th:action="@{/movies/{movieId}/vote(movieId=${movie.id})}">
+                <input name="movieId" th:value="${movie.id}" type="hidden"/>
+                <input name="opinion" type="hidden" value="L"/>
+                <button th:if="${!movie.alreadyLiked}" type="submit">Like</button>
+                <button th:if="${movie.alreadyLiked}" type="submit">Unlike</button>
+            </form>
+            <form method="post" th:action="@{/movies/{movieId}/vote(movieId=${movie.id})}">
+                <input name="movieId" th:value="${movie.id}" type="hidden"/>
+                <input name="opinion" type="hidden" value="H"/>
+                <button th:if="${!movie.alreadyHated}" type="submit">Hate</button>
+                <button th:if="${movie.alreadyHated}" type="submit">Unhate</button>
+            </form>
+        </div>
     </div>
 
 
