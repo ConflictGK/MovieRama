@@ -33,7 +33,8 @@
 <h1>Movies</h1>
 <div th:each="movie : ${movies}">
     <h2 th:text="${movie.title}">Movie Title</h2>
-    <p>Posted by <span th:text="${movie.user.username}">Username</span></p>
+    <p>Posted by <a th:href="@{/movies(postedBy=${movie.user.username})}" th:text="${movie.user.username}">Username</a>
+    </p>
     <p th:text="${movie.description}">Description</p>
 
     <div th:if="${#authorization.expression('isAuthenticated()') and movie.likes == 0 and movie.hates == 0}">

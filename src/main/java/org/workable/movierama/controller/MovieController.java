@@ -30,8 +30,10 @@ public class MovieController {
     public String listMovies(Model model,
                              @RequestParam(defaultValue = "date") String sortBy,
                              @RequestParam(defaultValue = "0") int page,
+                             @RequestParam(required = false) String postedBy,
                              @AuthenticationPrincipal UserDetails userDetails) {
-        Page<Movie> moviePage = movieService.findAll(sortBy, page);
+
+        Page<Movie> moviePage = movieService.findAll(sortBy, page, postedBy);
 
         model.addAttribute("movies", moviePage);
         model.addAttribute("page", moviePage);

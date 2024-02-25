@@ -34,11 +34,15 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Page<Movie> findAll(String sortBy, int page) {
+    public Page<Movie> findAll(String sortBy, int page, String postedBy) {
+        if (postedBy != null) {
+            return movieRepository.findByUserUsername(postedBy, PageRequest.of(page, pageSize));
+        }
+
         SortingProperty sortingProperty = SortingProperty.of(sortBy);
         if (sortingProperty.getHasOpinion()) {
-            List<Movie> movies = movieRepository.findAll();
-            List<Movie> sortedMovies = movies.stream()
+            List<Movie> unsortedMovies = movieRepository.findAll();
+            List<Movie> sortedMovies = unsortedMovies.stream()
                     .sorted(Comparator.comparingLong(m -> countOpinions(m, sortingProperty.getOpinionType())))
                     .collect(Collectors.toList());
 
@@ -46,6 +50,7 @@ public class MovieServiceImpl implements MovieService {
             Collections.reverse(sortedMovies);
             return listToPage(sortedMovies, page);
         }
+
         return movieRepository.findAll(sortingProperty.getPageRequest(page, pageSize));
     }
 

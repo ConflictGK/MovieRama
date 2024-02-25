@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface MovieService {
 
-    Page<Movie> findAll(String sortBy, int page);
+    Page<Movie> findAll(String sortBy, int page, String postedBy);
 
     Optional<Movie> findById(Long movieId);
     void save(Movie movie);
