@@ -2,21 +2,28 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Sign Up</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<h1>Sign Up</h1>
-<form th:action="@{/signup}" th:object="${user}" method="post">
-    <p>
-        <label for="username">Username:</label>
-        <input type="text" th:field="*{username}" id="username" required/>
-    </p>
-    <p>
-        <label for="password">Password:</label>
-        <input type="password" th:field="*{password}" id="password" required/>
-    </p>
-    <p>
-        <button type="submit">Sign Up</button>
-    </p>
-</form>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h1 class="text-center">Sign Up</h1>
+            <form class="mt-4" method="post" th:action="@{/signup}" th:object="${user}">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input class="form-control" id="username" required th:field="*{username}" type="text"/>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input class="form-control" id="password" required th:field="*{password}" type="password"/>
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-primary" type="submit">Sign Up</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
 </html>

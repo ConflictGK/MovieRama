@@ -1,79 +1,111 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>MovieRama</title>
+    <title><MovieRama</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <header>
-    <div th:fragment="navbar">
-        <div th:if="${not #authorization.expression('isAuthenticated()')}">
-            <!-- If user is not authenticated, show login and signup links -->
-            <a th:href="@{/login}">Log in</a> or
-            <a th:href="@{/signup}">Sign up</a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">MovieRama</a>
+        <div class="ml-auto" th:fragment="navbar">
+            <div class="navbar-nav" th:if="${not #authorization.expression('isAuthenticated()')}">
+                <a class="nav-item nav-link btn btn-primary mr-2" th:href="@{/login}">Log in</a>
+                <a class="nav-item nav-link btn btn-outline-primary" th:href="@{/signup}">Sign up</a>
+            </div>
+            <div class="navbar-nav" th:if="${#authorization.expression('isAuthenticated()')}">
+                <span class="navbar-text" th:if="${#authentication.principal.username != 'anonymousUser'}">
+                    Welcome back <span th:text="${#authentication.principal.username}">Username</span>!
+                    <a class="nav-item nav-link btn btn-outline-secondary" th:href="@{/logout}">Logout</a>
+                </span>
+            </div>
         </div>
-        <div th:if="${#authorization.expression('isAuthenticated()')}">
-            <!-- If user is authenticated, show welcome back message and logout link -->
-            <span th:if="${#authentication.principal.username != 'anonymousUser'}">
-            Welcome back <span th:text="${#authentication.principal.username}">Username</span>!
-            <a th:href="@{/logout}">Logout</a>
-        </span>
-        </div>
-    </div>
+    </nav>
 </header>
-<h1>MovieRama</h1>
-<div>
-    <span>Sort by:</span>
-    <a th:href="@{/movies?sortBy=likes}">Likes</a> |
-    <a th:href="@{/movies?sortBy=hates}">Hates</a> |
-    <a th:href="@{/movies?sortBy=date}">Date</a>
-</div>
-<div th:if="${#authorization.expression('isAuthenticated()')}">
-    <a class="btn btn-primary" th:href="@{/movies/new}">New Movie</a>
-</div>
-<h1>Movies</h1>
-<div th:each="movie : ${movies}">
-    <h2 th:text="${movie.title}">Movie Title</h2>
-    <p>Posted by <a th:href="@{/movies(postedBy=${movie.user.username})}" th:text="${movie.user.username}">Username</a>
-    </p>
-    <p th:text="${movie.description}">Description</p>
 
-    <div th:if="${#authorization.expression('isAuthenticated()') and movie.likes == 0 and movie.hates == 0}">
-        <p>Be the first to vote for this movie: </p>
+
+<div class="container mt-3">
+    <div class="container my-3">
+        <div class="row">
+            <div class="col">
+                <div aria-label="Toolbar with button groups" class="btn-toolbar" role="toolbar">
+                    <div aria-label="First group" class="btn-group mr-2" role="group">
+                        <span class="input-group-text">Sort by:</span>
+                        <a class="btn btn-outline-secondary" th:href="@{/movies?sortBy=likes}">Likes</a>
+                        <a class="btn btn-outline-secondary" th:href="@{/movies?sortBy=hates}">Hates</a>
+                        <a class="btn btn-outline-secondary" th:href="@{/movies?sortBy=date}">Date</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <!-- Render voting buttons only if the user is authenticated and is not the owner of the movie -->
     <div th:if="${#authorization.expression('isAuthenticated()')}">
-        <div th:unless="${movie.user.username == #authentication.principal.username}">
-            <!-- Check if the user has liked/hated this movie -->
-            <form method="post" th:action="@{/movies/{movieId}/vote(movieId=${movie.id})}">
-                <input name="movieId" th:value="${movie.id}" type="hidden"/>
-                <input name="opinion" type="hidden" value="L"/>
-                <button th:if="${!movie.alreadyLiked}" type="submit">Like</button>
-                <button th:if="${movie.alreadyLiked}" type="submit">Unlike</button>
-            </form>
-            <form method="post" th:action="@{/movies/{movieId}/vote(movieId=${movie.id})}">
-                <input name="movieId" th:value="${movie.id}" type="hidden"/>
-                <input name="opinion" type="hidden" value="H"/>
-                <button th:if="${!movie.alreadyHated}" type="submit">Hate</button>
-                <button th:if="${movie.alreadyHated}" type="submit">Unhate</button>
-            </form>
+        <a class="btn btn-primary" th:href="@{/movies/new}">New Movie</a>
+    </div>
+    <div class="card mb-3" th:each="movie : ${movies}">
+        <div class="card-body">
+            <h2 class="card-title" th:text="${movie.title}">Movie Title</h2>
+            <h5 class="card-subtitle mb-2 text-muted">Posted by <a th:href="@{/movies(postedBy=${movie.user.username})}"
+                                                                   th:text="${movie.user.username}">Username</a></h5>
+            <p class="card-text" th:text="${movie.description}">Description</p>
+
+            <div th:if="${#authorization.expression('isAuthenticated()') and movie.likes == 0 and movie.hates == 0}">
+                <p>Be the first to vote for this movie: </p>
+                <!-- Add vote buttons -->
+            </div>
+            <div th:if="${#authorization.expression('isAuthenticated()')}">
+                <div th:unless="${movie.user.username == #authentication.principal.username}">
+                    <form class="d-inline" method="post" th:action="@{/movies/{movieId}/vote(movieId=${movie.id})}">
+                        <input name="movieId" th:value="${movie.id}" type="hidden"/>
+                        <input name="opinion" type="hidden" value="L"/>
+                        <button class="btn btn-outline-primary btn-sm" th:if="${!movie.alreadyLiked}" type="submit">
+                            Like
+                        </button>
+                        <button class="btn btn-primary btn-sm" th:if="${movie.alreadyLiked}" type="submit">Unlike
+                        </button>
+                    </form>
+                    <form class="d-inline" method="post" th:action="@{/movies/{movieId}/vote(movieId=${movie.id})}">
+                        <input name="movieId" th:value="${movie.id}" type="hidden"/>
+                        <input name="opinion" type="hidden" value="H"/>
+                        <button class="btn btn-outline-danger btn-sm" th:if="${!movie.alreadyHated}" type="submit">
+                            Hate
+                        </button>
+                        <button class="btn btn-danger btn-sm" th:if="${movie.alreadyHated}" type="submit">Unhate
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="mt-2">
+                <span th:text="${movie.likes} + ' likes | ' + ${movie.hates} + ' hates'">Votes</span>
+            </div>
         </div>
     </div>
 
-
-    <div>
-        <span th:text="${movie.likes} + ' likes | ' + ${movie.hates} + ' hates'">Votes</span>
+    <div class="pagination justify-content-center">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <!-- Previous Page Link -->
+                <li class="page-item" th:classappend="${not page.hasPrevious()} ? 'disabled' : ''">
+                    <a aria-label="Previous" class="page-link"
+                       th:href="@{/movies(page=${page.number-1},sortBy=${sortBy})}">
+                        <span aria-hidden="true">&laquo; Previous</span>
+                    </a>
+                </li>
+                <!-- Page Numbers -->
+                <li class="page-item" th:classappend="${i == page.number} ? 'active' : ''"
+                    th:each="i : ${#numbers.sequence(0, page.totalPages-1)}">
+                    <a class="page-link" th:href="@{/movies(page=${i},sortBy=${sortBy})}" th:text="${i + 1}"></a>
+                </li>
+                <!-- Next Page Link -->
+                <li class="page-item" th:classappend="${not page.hasNext()} ? 'disabled' : ''">
+                    <a aria-label="Next" class="page-link" th:href="@{/movies(page=${page.number+1},sortBy=${sortBy})}">
+                        <span aria-hidden="true">Next &raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
-
-<div class="pagination">
-    <a th:href="@{/movies(page=${page.number-1},sortBy=${sortBy})}" th:if="${page.hasPrevious()}">&laquo; Previous</a>
-    <span th:each="i : ${#numbers.sequence(0, page.totalPages-1)}">
-        <a th:classappend="${i == page.number} ? 'active' : ''" th:href="@{/movies(page=${i},sortBy=${sortBy})}"
-           th:text="${i + 1}"></a>
-    </span>
-    <a th:href="@{/movies(page=${page.number+1},sortBy=${sortBy})}" th:if="${page.hasNext()}">Next &raquo;</a>
-</div>
-
-
 </body>
-</html>
