@@ -26,6 +26,16 @@ public class MovieController {
     private final UserService userService;
     private final OpinionService opinionService;
 
+    /**
+     * Lists movies sorted by a specified attribute and paginates them. Also, enriches movies with like/hate counts and user-specific interactions if the user is logged in.
+     *
+     * @param model       the Spring MVC model to pass data to the view
+     * @param sortBy      the attribute to sort the movies by, defaults to "date"
+     * @param page        the page number for pagination, defaults to 0
+     * @param postedBy    the username of the user who posted the movies, nullable
+     * @param userDetails the Spring Security UserDetails of the currently authenticated user, nullable
+     * @return the name of the view to render, in this case "movies"
+     */
     @GetMapping("/movies")
     public String listMovies(Model model,
                              @RequestParam(defaultValue = "date") String sortBy,
@@ -55,6 +65,11 @@ public class MovieController {
         return "movies";
     }
 
+    /**
+     * Shows the form for registering a new movie.
+     * @param model the Spring MVC model to pass data to the view
+     * @return the name of the view to render, in this case "registerMovie"
+     */
     @GetMapping("/movies/new")
     public String showRegisterMovieForm(Model model) {
         model.addAttribute("movie", new Movie());
@@ -78,6 +93,13 @@ public class MovieController {
         return "redirect:/movies";
     }
 
+    /**
+     * Processes a vote (like or hate) on a movie by the currently authenticated user.
+     * @param movieId the ID of the movie to vote on
+     * @param opinion the opinion of the vote, expected to be either "like" or "hate"
+     * @param userDetails the Spring Security UserDetails of the currently authenticated user
+     * @return a redirect string to the movies listing page
+     */
     @PostMapping("/movies/{movieId}/vote")
     public String handleVote(@PathVariable Long movieId,
                              @RequestParam("opinion") String opinion,
